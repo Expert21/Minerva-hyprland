@@ -1,4 +1,6 @@
-# 🌙 Obsidian Arcana + 👻 Ghost Mode - Hyprland Rice
+# Minerva - Hyprland Rice
+
+## 🌙 Obsidian Arcana + 👻 Ghost Mode
 
 A **dual-mode** Hyprland configuration:
 - **Obsidian Arcana** - Dark fantasy aesthetic with deep purples and mystical glows
