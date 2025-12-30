@@ -1,0 +1,82 @@
+{
+    // ══════════════════════════════════════════════════════════════════════════
+    // WAYBAR - GHOST MODE
+    // Minimalistic Security-Focused Bar
+    // ══════════════════════════════════════════════════════════════════════════
+    "layer": "top",
+    "position": "top",
+    "height": 28,
+    "spacing": 0,
+    "margin-top": 0,
+    "margin-left": 0,
+    "margin-right": 0,
+    // Module placement - security focused
+    "modules-left": [
+        "custom/mode",
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "custom/vpn",
+        "network",
+        "pulseaudio",
+        "tray"
+    ],
+    // ═══════════════════════════════════════════════════════════════════════
+    // LEFT MODULES
+    // ═══════════════════════════════════════════════════════════════════════
+    "custom/mode": {
+        "format": "󰊠 GHOST",
+        "tooltip": "Ghost Mode - Pentesting Environment Active"
+    },
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "on-click": "activate",
+        "sort-by-number": true
+    },
+    // ═══════════════════════════════════════════════════════════════════════
+    // CENTER MODULES
+    // ═══════════════════════════════════════════════════════════════════════
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%Y-%m-%d}",
+        "tooltip-format": "{:%A, %B %d, %Y}"
+    },
+    // ═══════════════════════════════════════════════════════════════════════
+    // RIGHT MODULES
+    // ═══════════════════════════════════════════════════════════════════════
+    "custom/vpn": {
+        "exec": "~/.config/hypr/scripts/vpn-status.sh",
+        "interval": 5,
+        "format": "{}",
+        "tooltip": "ProtonVPN Status"
+    },
+    "tray": {
+        "icon-size": 14,
+        "spacing": 5
+    },
+    "network": {
+        "format-wifi": "󰤨 {signalStrength}%",
+        "format-ethernet": "󰈀 {ipaddr}",
+        "format-disconnected": "󰤭 OFFLINE",
+        "tooltip-format-wifi": "{essid}\n{ipaddr}",
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}",
+        "on-click": "nm-connection-editor"
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟",
+        "format-icons": {
+            "default": [
+                "󰕿",
+                "󰖀",
+                "󰕾"
+            ]
+        },
+        "on-click": "pavucontrol",
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-"
+    }
+}

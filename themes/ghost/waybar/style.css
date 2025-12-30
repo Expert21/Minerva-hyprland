@@ -1,0 +1,152 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   WAYBAR STYLES - GHOST MODE
+   Minimalistic Pentesting Theme
+   
+   Colors:
+   - bg:       #000000
+   - surface:  #111111
+   - cyan:     #00ffff
+   - red:      #ff3333
+   - green:    #00ff00
+   - gray:     #555555
+   - text:     #cccccc
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background: #000000;
+    border-bottom: 1px solid #333333;
+}
+
+tooltip {
+    background: #111111;
+    border: 1px solid #00ffff;
+    border-radius: 0;
+    color: #cccccc;
+}
+
+tooltip label {
+    color: #cccccc;
+    padding: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODE INDICATOR
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#custom-mode {
+    color: #00ffff;
+    font-weight: bold;
+    padding: 0 15px;
+    background: #111111;
+    border-right: 1px solid #333333;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WORKSPACES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#workspaces {
+    margin: 0 10px;
+}
+
+#workspaces button {
+    color: #555555;
+    padding: 0 8px;
+    margin: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+#workspaces button:hover {
+    color: #00ffff;
+    background: #111111;
+}
+
+#workspaces button.active {
+    color: #000000;
+    background: #00ffff;
+}
+
+#workspaces button.urgent {
+    color: #ff3333;
+    background: #1a0000;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CLOCK
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#clock {
+    color: #cccccc;
+    font-weight: 600;
+    padding: 0 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RIGHT MODULES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#custom-vpn,
+#tray,
+#network,
+#pulseaudio {
+    color: #cccccc;
+    padding: 0 10px;
+    background: transparent;
+}
+
+/* VPN Status */
+#custom-vpn {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+#custom-vpn.disconnected {
+    color: #ff3333;
+}
+
+/* Network */
+#network {
+    color: #00ffff;
+}
+
+#network.disconnected {
+    color: #ff3333;
+    font-weight: bold;
+}
+
+/* Audio */
+#pulseaudio {
+    color: #555555;
+}
+
+#pulseaudio.muted {
+    color: #333333;
+}
+
+/* Tray */
+#tray {
+    margin-right: 5px;
+}
+
+#tray>.passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray>.needs-attention {
+    -gtk-icon-effect: highlight;
+    color: #ff3333;
+}

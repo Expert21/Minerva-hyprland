@@ -1,0 +1,93 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROFI THEME - GHOST MODE
+   Minimalistic Pentesting Theme
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    bg:          #000000;
+    bg-alt:      #111111;
+    fg:          #cccccc;
+    fg-alt:      #555555;
+    cyan:        #00ffff;
+    red:         #ff3333;
+    green:       #00ff00;
+    
+    background-color: transparent;
+    text-color:       @fg;
+    margin:           0;
+    padding:          0;
+    spacing:          0;
+}
+
+window {
+    width:            400px;
+    background-color: @bg;
+    border:           1px solid;
+    border-color:     @cyan;
+    border-radius:    0;
+}
+
+mainbox {
+    children: [inputbar, listview];
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border:           0 0 1px 0;
+    border-color:     #333333;
+    padding:          12px;
+    children:         [prompt, entry];
+}
+
+prompt {
+    background-color: @cyan;
+    text-color:       @bg;
+    padding:          4px 8px;
+    margin:           0 10px 0 0;
+    font:             "JetBrainsMono Nerd Font Bold 11";
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @fg;
+    placeholder:      "search...";
+    placeholder-color: @fg-alt;
+}
+
+listview {
+    lines:            8;
+    columns:          1;
+    fixed-height:     true;
+    background-color: @bg;
+    padding:          5px 0;
+}
+
+element {
+    padding:          10px 15px;
+    background-color: transparent;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+element selected.normal {
+    background-color: @cyan;
+    text-color:       @bg;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
+
+element-icon {
+    size:             0;
+}

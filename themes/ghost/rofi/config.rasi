@@ -1,0 +1,19 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROFI CONFIG - GHOST MODE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+configuration {
+    modi: "drun,run,window";
+    show-icons: false;
+    terminal: "kitty";
+    drun-display-format: "{name}";
+    location: 0;
+    disable-history: false;
+    hide-scrollbar: true;
+    display-drun: "RUN";
+    display-run: "CMD";
+    display-window: "WIN";
+    sidebar-mode: false;
+}
+
+@theme "~/.config/rofi/theme.rasi"

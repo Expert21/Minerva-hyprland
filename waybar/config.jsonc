@@ -1,0 +1,92 @@
+{
+    // ══════════════════════════════════════════════════════════════════════════
+    // WAYBAR - OBSIDIAN ARCANA
+    // ══════════════════════════════════════════════════════════════════════════
+    
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "spacing": 0,
+    "margin-top": 5,
+    "margin-left": 10,
+    "margin-right": 10,
+
+    // Module placement
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["tray", "network", "pulseaudio"],
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // LEFT MODULES
+    // ═══════════════════════════════════════════════════════════════════════
+    
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "1": "󰎤",
+            "2": "󰎧",
+            "3": "󰎪",
+            "4": "󰎭",
+            "5": "󰎱",
+            "6": "󰎳",
+            "7": "󰎶",
+            "8": "󰎹",
+            "9": "󰎼",
+            "urgent": "",
+            "default": "󰝥"
+        },
+        "on-click": "activate",
+        "sort-by-number": true
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CENTER MODULES
+    // ═══════════════════════════════════════════════════════════════════════
+    
+    "clock": {
+        "format": "  {:%I:%M %p}",
+        "format-alt": "󰃭  {:%A, %B %d, %Y}",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "mode": "month",
+            "mode-mon-col": 3,
+            "weeks-pos": "right",
+            "format": {
+                "months": "<span color='#c77dff'><b>{}</b></span>",
+                "days": "<span color='#e0e0e0'>{}</span>",
+                "weeks": "<span color='#6c6c6c'>W{}</span>",
+                "weekdays": "<span color='#9d4edd'><b>{}</b></span>",
+                "today": "<span color='#7b2cbf'><b><u>{}</u></b></span>"
+            }
+        }
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // RIGHT MODULES
+    // ═══════════════════════════════════════════════════════════════════════
+    
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    },
+
+    "network": {
+        "format-wifi": "󰤨  {signalStrength}%",
+        "format-ethernet": "󰈀  {ipaddr}",
+        "format-disconnected": "󰤭  Off",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}",
+        "on-click": "nm-connection-editor"
+    },
+
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "󰝟  Muted",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "on-click": "pavucontrol",
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-"
+    }
+}

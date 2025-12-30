@@ -1,0 +1,20 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROFI CONFIG - OBSIDIAN ARCANA
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+configuration {
+    modi: "drun,run,window";
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    terminal: "kitty";
+    drun-display-format: "{name}";
+    location: 0;
+    disable-history: false;
+    hide-scrollbar: true;
+    display-drun: "   Apps ";
+    display-run: "   Run ";
+    display-window: " 󰕰  Windows ";
+    sidebar-mode: true;
+}
+
+@theme "~/.config/rofi/theme.rasi"

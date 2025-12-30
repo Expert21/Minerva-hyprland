@@ -1,0 +1,188 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROFI THEME - WALLPAPER SELECTOR
+   Obsidian Arcana - Grid layout for wallpaper previews
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    /* Colors - Obsidian Arcana palette */
+    bg:         #0d0d0dE6;
+    surface:    #1a1a2eCC;
+    primary:    #7b2cbf;
+    accent:     #c77dff;
+    glow:       #9d4edd;
+    text:       #e0e0e0;
+    muted:      #6c6c6c;
+    urgent:     #ff6b6b;
+    
+    /* Global */
+    font: "JetBrainsMono Nerd Font 11";
+    background-color: transparent;
+    text-color: @text;
+}
+
+window {
+    width: 900px;
+    height: 600px;
+    background-color: @bg;
+    border: 2px solid;
+    border-color: @primary;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, message, listview ];
+    spacing: 15px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INPUT BAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+inputbar {
+    background-color: @surface;
+    border: 1px solid;
+    border-color: @primary;
+    border-radius: 10px;
+    padding: 12px 15px;
+    children: [ prompt, textbox-prompt-colon, entry ];
+}
+
+prompt {
+    text-color: @accent;
+    font: "JetBrainsMono Nerd Font Bold 12";
+}
+
+textbox-prompt-colon {
+    expand: false;
+    str: " ";
+    text-color: @muted;
+}
+
+entry {
+    placeholder: "Search wallpapers...";
+    placeholder-color: @muted;
+    text-color: @text;
+    cursor: text;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIST VIEW - Grid Layout for Wallpapers
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+listview {
+    lines: 2;
+    columns: 4;
+    fixed-height: true;
+    fixed-columns: true;
+    scrollbar: false;
+    spacing: 15px;
+    cycle: true;
+    dynamic: false;
+    layout: vertical;
+    flow: horizontal;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ELEMENTS - Large icons for wallpaper previews
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+element {
+    background-color: @surface;
+    border: 2px solid;
+    border-color: transparent;
+    border-radius: 12px;
+    padding: 10px;
+    orientation: vertical;
+    spacing: 8px;
+}
+
+element normal.normal {
+    background-color: @surface;
+    text-color: @text;
+}
+
+element normal.urgent {
+    background-color: @urgent;
+    text-color: @bg;
+}
+
+element normal.active {
+    background-color: @surface;
+    text-color: @accent;
+    border-color: @accent;
+}
+
+element selected.normal {
+    background-color: @primary;
+    text-color: @text;
+    border-color: @accent;
+    /* Glow effect for selected */
+}
+
+element selected.urgent {
+    background-color: @urgent;
+    text-color: @bg;
+}
+
+element selected.active {
+    background-color: @accent;
+    text-color: @bg;
+}
+
+element-icon {
+    size: 150px;
+    cursor: inherit;
+    background-color: transparent;
+    border-radius: 8px;
+    horizontal-align: 0.5;
+}
+
+element-icon selected {
+    background-color: transparent;
+}
+
+element-text {
+    cursor: inherit;
+    vertical-align: 0.5;
+    horizontal-align: 0.5;
+    background-color: transparent;
+    highlight: none;
+    font: "JetBrainsMono Nerd Font 10";
+}
+
+element-text selected {
+    text-color: @text;
+    background-color: transparent;
+    highlight: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MESSAGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+message {
+    background-color: @surface;
+    border: 1px solid;
+    border-color: @primary;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+textbox {
+    text-color: @text;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR (hidden but styled)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+scrollbar {
+    width: 4px;
+    border: 0;
+    handle-color: @primary;
+    handle-width: 4px;
+    padding: 0;
+    background-color: @surface;
+}
