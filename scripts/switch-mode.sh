@@ -61,7 +61,7 @@ kill_services() {
     echo -e "${CYAN}[*] Stopping services...${NC}"
     
     # Try graceful termination first (SIGTERM)
-    pkill -x waybar 2>/dev/null || true
+    pkill quickshell 2>/dev/null || true
     pkill -x dunst 2>/dev/null || true
     pkill -x swww-daemon 2>/dev/null || true
     pkill -x swaybg 2>/dev/null || true
@@ -70,7 +70,7 @@ kill_services() {
     sleep 0.5
     
     # Force kill any survivors (SIGKILL)
-    pkill -9 -x waybar 2>/dev/null || true
+    pkill -9 quickshell 2>/dev/null || true
     pkill -9 -x dunst 2>/dev/null || true
     pkill -9 -x swww-daemon 2>/dev/null || true
     pkill -9 -x swaybg 2>/dev/null || true
@@ -99,7 +99,7 @@ activate_ghost_mode() {
     
     # Start waybar and dunst with new configs
     sleep 0.5
-    waybar &
+    quickshell -p "$THEMES_DIR/ghost/quickshell/shell.qml" &
     disown
     dunst &
     disown
@@ -261,7 +261,7 @@ EOFUFW
     
     # Start waybar and dunst with new configs
     sleep 0.3
-    waybar &
+    quickshell -p "$THEMES_DIR/arcana/quickshell/shell.qml" &
     disown
     dunst &
     disown
