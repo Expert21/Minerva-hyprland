@@ -3,20 +3,24 @@ import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 
-Panel {
+PanelWindow {
     id: cmdCenter
-    anchors.centerIn: parent
-    width: 600
-    height: 400
+    // Fullscreen overlay with centered content
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
     color: "transparent"
     visible: false
+    focusable: true
 
     // ESC key handler
     Keys.onEscapePressed: cmdCenter.visible = false
-    focus: visible
 
     Rectangle {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: 600
+        height: 400
         color: "#e6050505"
         border.color: "#00ff00"
         border.width: 2

@@ -3,14 +3,12 @@ import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 
-Panel {
+PanelWindow {
     id: statusBar
-    anchors {
-        bottom: parent.bottom
-        left: parent.left
-        right: parent.right
-    }
-    height: 32
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
+    implicitHeight: 32
     color: "#e6000000"
     
     signal toggleCommandCenter()
@@ -27,10 +25,10 @@ Panel {
         id: statProc
         command: ["/home/isaiah/hyprland rice/scripts/get_stats.sh"]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "") {
+            onTextChanged: {
+                if (text.trim() !== "") {
                     try {
-                        statusBar.statsOutput = JSON.parse(content.trim())
+                        statusBar.statsOutput = JSON.parse(text.trim())
                     } catch(e) {}
                 }
             }
@@ -41,10 +39,10 @@ Panel {
         id: vpnProc
         command: ["/home/isaiah/hyprland rice/scripts/get_vpn_status.sh"]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "") {
+            onTextChanged: {
+                if (text.trim() !== "") {
                     try {
-                        var result = JSON.parse(content.trim())
+                        var result = JSON.parse(text.trim())
                         statusBar.vpnConnected = (result.connected === "Connected")
                         statusBar.vpnStatus = result.connected.toUpperCase()
                     } catch(e) {}

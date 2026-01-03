@@ -5,14 +5,12 @@ import QtQuick
 import QtQuick.Layouts
 
 // Stripped-down Ghost Mode TopBar: Workspaces | Time | VPN | IP
-Panel {
+PanelWindow {
     id: topBar
-    anchors {
-        top: parent.top
-        left: parent.left
-        right: parent.right
-    }
-    height: 32
+    anchors.top: true
+    anchors.left: true
+    anchors.right: true
+    implicitHeight: 32
     color: "#e6000000"
 
     // VPN status
@@ -31,30 +29,22 @@ Panel {
         7: "7",
         8: "8",
         9: "9"
-    }
 
     Process {
         id: vpnProc
         command: ["/bin/sh", "-c", "ip link show proton0 2>/dev/null || ip link show tun0 2>/dev/null || ip link show wg0 2>/dev/null"]
         stdout: StdioCollector {
-            onContentChanged: {
-                topBar.vpnConnected = content.trim().length > 0
+            onTextChanged: {
+                topBar.vpnConnected = text.trim().length > 0
                 topBar.vpnStatus = topBar.vpnConnected ? "CONNECTED" : "DISCONNECTED"
-            }
-        }
-    }
 
     Process {
         id: ipProc
         command: ["/bin/sh", "-c", "ip -4 addr show $(ip route | grep default | awk '{print $5}' | head -1) 2>/dev/null | grep inet | awk '{print $2}' | cut -d/ -f1 | head -1"]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "") {
-                    topBar.ipAddress = content.trim()
-                }
-            }
-        }
-    }
+            onTextChanged: {
+                if (text.trim() !== "") {
+                    topBar.ipAddress = text.trim()
 
     Timer {
         interval: 3000
@@ -65,12 +55,9 @@ Panel {
             vpnProc.running = true
             ipProc.running = false
             ipProc.running = true
-        }
         Component.onCompleted: {
             vpnProc.running = true
             ipProc.running = true
-        }
-    }
 
     RowLayout {
         anchors.fill: parent
@@ -102,15 +89,10 @@ Panel {
                         font.family: "Monospace"
                         font.bold: true
                         font.pixelSize: 11
-                    }
 
                     MouseArea {
                         anchors.fill: parent
                         onClicked: Hyprland.dispatch("workspace", modelData.id)
-                    }
-                }
-            }
-        }
 
         Item { Layout.fillWidth: true }
 
@@ -129,8 +111,6 @@ Panel {
                 font.family: "Monospace"
                 font.bold: true
                 font.pixelSize: 11
-            }
-        }
 
         // IP Address
         Text {
@@ -138,7 +118,6 @@ Panel {
             color: "#00ffff"
             font.family: "Monospace"
             font.pixelSize: 11
-        }
 
         // Date/Time
         Text {
@@ -154,7 +133,3 @@ Panel {
                 running: true
                 repeat: true
                 onTriggered: parent.text = Qt.formatDateTime(new Date(), "yyyy-MM-dd HH:mm")
-            }
-        }
-    }
-}

@@ -4,13 +4,16 @@ import QtQuick
 import QtQuick.Layouts
 
 // Reusable theme-aware wallpaper selector widget with Local + Wallpaper Engine support
-Panel {
+PanelWindow {
     id: wallpaperWidget
-    anchors.centerIn: parent
-    width: 750
-    height: 550
+    // Use all 4 anchors for fullscreen overlay, centered content inside
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
     color: "transparent"
     visible: false
+    focusable: true
 
     // Theme mode determines which wallpaper directory to use
     property string themeMode: "arcana"
@@ -29,16 +32,15 @@ Panel {
     property string fontFamily: themeMode === "ghost" ? "Monospace" : "Sans Serif"
 
     Keys.onEscapePressed: wallpaperWidget.visible = false
-    focus: visible
 
     // Scan local wallpaper directory
     Process {
         id: scanLocalProc
         command: ["/bin/sh", "-c", "ls -1 '" + wallpaperDir + "' 2>/dev/null"]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "") {
-                    wallpaperWidget.localWallpapers = content.trim().split("\n")
+            onTextChanged: {
+                if (text.trim() !== "") {
+                    wallpaperWidget.localWallpapers = text.trim().split("\n")
                 }
             }
         }
@@ -58,9 +60,9 @@ Panel {
             "done"
         ]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "") {
-                    var lines = content.trim().split("\n")
+            onTextChanged: {
+                if (text.trim() !== "") {
+                    var lines = text.trim().split("\n")
                     var items = []
                     for (var i = 0; i < lines.length; i++) {
                         var parts = lines[i].split("|")
@@ -108,7 +110,9 @@ Panel {
     }
 
     Rectangle {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: 750
+        height: 550
         color: bgColor
         border.color: accentColor
         border.width: 2

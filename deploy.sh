@@ -2,6 +2,7 @@
 # ╔══════════════════════════════════════════════════════════════════════════╗
 # ║              CONFIG DEPLOYER - DUAL MODE RICE                              ║
 # ║                    Obsidian Arcana + Ghost Mode                            ║
+# ║                    Using Quickshell (no waybar)                            ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 
 set -e
@@ -22,17 +23,63 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m'
 
-# Configs to deploy (no waybar - using quickshell instead)
+# Helper function to safely copy files/directories
+safe_copy() {
+    local src="$1"
+    local dest="$2"
+    local is_dir="${3:-false}"
+    
+    if [ "$is_dir" = "true" ]; then
+        if [ -d "$src" ]; then
+            mkdir -p "$dest"
+            cp -r "$src"/* "$dest/" 2>/dev/null || true
+            echo -e "  ${GREEN}✓${NC} Deployed $(basename "$src")/"
+        else
+            echo -e "  ${YELLOW}⚠${NC} Skipped $(basename "$src")/ (not found)"
+        fi
+    else
+        if [ -f "$src" ]; then
+            mkdir -p "$(dirname "$dest")"
+            cp "$src" "$dest"
+            echo -e "  ${GREEN}✓${NC} Deployed $(basename "$src")"
+        else
+            echo -e "  ${YELLOW}⚠${NC} Skipped $(basename "$src") (not found)"
+        fi
+    fi
+}
+
+# Helper function to create safe symlinks
+safe_symlink() {
+    local src="$1"
+    local dest="$2"
+    
+    rm -rf "$dest"
+    if [ -e "$src" ]; then
+        ln -sf "$src" "$dest"
+        echo -e "  ${GREEN}✓${NC} Linked $(basename "$dest") -> $(basename "$src")"
+    else
+        echo -e "  ${YELLOW}⚠${NC} Failed to link $(basename "$dest") (source not found)"
+    fi
+}
+
+# Configs to backup/deploy
 CONFIGS=(
     "hypr"
     "kitty"
     "rofi"
     "dunst"
+    "btop"
+    "ranger"
+    "micro"
+    "ekphos"
 )
 
-# Backup existing configs
+# ─────────────────────────────────────────────────────────────────────────────
+# BACKUP PHASE
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${YELLOW}Checking for existing configs to backup...${NC}"
 NEEDS_BACKUP=false
 for config in "${CONFIGS[@]}"; do
@@ -55,7 +102,9 @@ if [ "$NEEDS_BACKUP" = true ]; then
     echo ""
 fi
 
-# Create hypr directory structure
+# ─────────────────────────────────────────────────────────────────────────────
+# DIRECTORY STRUCTURE
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Setting up directory structure...${NC}"
 mkdir -p "$HYPR_DIR/themes/arcana/rofi"
 mkdir -p "$HYPR_DIR/themes/arcana/dunst"
@@ -66,118 +115,315 @@ mkdir -p "$HYPR_DIR/themes/ghost/quickshell"
 mkdir -p "$HYPR_DIR/themes/shared"
 mkdir -p "$HYPR_DIR/scripts"
 mkdir -p "$HYPR_DIR/wallpapers"
+echo -e "${GREEN}✓ Directory structure created${NC}"
+echo ""
 
-# Deploy theme files
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY BASE HYPRLAND CONFIG
+# ─────────────────────────────────────────────────────────────────────────────
+echo -e "${PURPLE}Deploying base Hyprland config...${NC}"
+safe_copy "$SCRIPT_DIR/hypr/hyprland.conf" "$HYPR_DIR/hyprland-base.conf"
+safe_copy "$SCRIPT_DIR/hypr/hypridle.conf" "$HYPR_DIR/hypridle.conf"
+safe_copy "$SCRIPT_DIR/hypr/hyprlock.conf" "$HYPR_DIR/hyprlock-base.conf"
+echo ""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY SHARED QUICKSHELL COMPONENTS
+# Quickshell requires all QML files in the same directory for simple setups.
+# We copy shared components directly into each theme's quickshell folder.
+# ─────────────────────────────────────────────────────────────────────────────
+echo -e "${PURPLE}Deploying shared Quickshell components...${NC}"
+SHARED_SRC="$SCRIPT_DIR/themes/shared"
+
+if [ -d "$SHARED_SRC" ]; then
+    # Copy shared QML files directly into arcana/quickshell/
+    for qml_file in "$SHARED_SRC"/*.qml; do
+        if [ -f "$qml_file" ]; then
+            cp "$qml_file" "$HYPR_DIR/themes/arcana/quickshell/"
+            echo -e "  ${GREEN}✓${NC} Copied $(basename "$qml_file") to arcana/quickshell/"
+        fi
+    done
+    
+    # Copy shared QML files directly into ghost/quickshell/
+    for qml_file in "$SHARED_SRC"/*.qml; do
+        if [ -f "$qml_file" ]; then
+            cp "$qml_file" "$HYPR_DIR/themes/ghost/quickshell/"
+            echo -e "  ${GREEN}✓${NC} Copied $(basename "$qml_file") to ghost/quickshell/"
+        fi
+    done
+    
+    # Also keep a copy in themes/shared for reference
+    mkdir -p "$HYPR_DIR/themes/shared"
+    cp -r "$SHARED_SRC"/* "$HYPR_DIR/themes/shared/" 2>/dev/null || true
+    echo -e "  ${GREEN}✓${NC} Copied shared to themes/shared/ (reference)"
+else
+    echo -e "  ${RED}✗${NC} Shared components directory not found!"
+fi
+echo ""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY ARCANA THEME
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Deploying Arcana theme...${NC}"
-cp "$SCRIPT_DIR/themes/arcana/hyprland.conf" "$HYPR_DIR/themes/arcana/"
-cp "$SCRIPT_DIR/themes/arcana/kitty.conf" "$HYPR_DIR/themes/arcana/"
-cp -r "$SCRIPT_DIR/themes/arcana/rofi/"* "$HYPR_DIR/themes/arcana/rofi/"
-cp "$SCRIPT_DIR/themes/arcana/dunst/dunstrc" "$HYPR_DIR/themes/arcana/dunst/"
-cp -r "$SCRIPT_DIR/themes/arcana/quickshell/"* "$HYPR_DIR/themes/arcana/quickshell/"
-cp "$SCRIPT_DIR/themes/arcana/hyprlock.conf" "$HYPR_DIR/themes/arcana/"
+ARCANA_SRC="$SCRIPT_DIR/themes/arcana"
+ARCANA_DEST="$HYPR_DIR/themes/arcana"
 
+safe_copy "$ARCANA_SRC/hyprland.conf" "$ARCANA_DEST/hyprland.conf"
+safe_copy "$ARCANA_SRC/kitty.conf" "$ARCANA_DEST/kitty.conf"
+safe_copy "$ARCANA_SRC/hyprlock.conf" "$ARCANA_DEST/hyprlock.conf"
+safe_copy "$ARCANA_SRC/rofi" "$ARCANA_DEST/rofi" true
+safe_copy "$ARCANA_SRC/dunst" "$ARCANA_DEST/dunst" true
+safe_copy "$ARCANA_SRC/quickshell" "$ARCANA_DEST/quickshell" true
+echo ""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY GHOST THEME
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${CYAN}Deploying Ghost Mode theme...${NC}"
-cp "$SCRIPT_DIR/themes/ghost/hyprland.conf" "$HYPR_DIR/themes/ghost/"
-cp "$SCRIPT_DIR/themes/ghost/kitty.conf" "$HYPR_DIR/themes/ghost/"
-cp -r "$SCRIPT_DIR/themes/ghost/rofi/"* "$HYPR_DIR/themes/ghost/rofi/"
-cp "$SCRIPT_DIR/themes/ghost/dunst/dunstrc" "$HYPR_DIR/themes/ghost/"
-cp -r "$SCRIPT_DIR/themes/ghost/quickshell/"* "$HYPR_DIR/themes/ghost/quickshell/"
-cp "$SCRIPT_DIR/themes/ghost/hyprlock.conf" "$HYPR_DIR/themes/ghost/"
+GHOST_SRC="$SCRIPT_DIR/themes/ghost"
+GHOST_DEST="$HYPR_DIR/themes/ghost"
 
-echo -e "${PURPLE}Deploying shared components...${NC}"
-cp -r "$SCRIPT_DIR/themes/shared/"* "$HYPR_DIR/themes/shared/"
+safe_copy "$GHOST_SRC/hyprland.conf" "$GHOST_DEST/hyprland.conf"
+safe_copy "$GHOST_SRC/kitty.conf" "$GHOST_DEST/kitty.conf"
+safe_copy "$GHOST_SRC/hyprlock.conf" "$GHOST_DEST/hyprlock.conf"
+safe_copy "$GHOST_SRC/rofi" "$GHOST_DEST/rofi" true
+safe_copy "$GHOST_SRC/dunst" "$GHOST_DEST/dunst" true
+safe_copy "$GHOST_SRC/quickshell" "$GHOST_DEST/quickshell" true
+echo ""
 
-# Deploy scripts
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY ALL SCRIPTS
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Deploying scripts...${NC}"
-cp "$SCRIPT_DIR/scripts/switch-mode.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/vpn-status.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/wallpaper.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/wallpaper-switcher.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/wallpaper-menu.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/pentest-tools.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/rofi-emoji.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/rofi-pass.sh" "$HYPR_DIR/scripts/"
-cp "$SCRIPT_DIR/scripts/rofi-projects.sh" "$HYPR_DIR/scripts/"
-chmod +x "$HYPR_DIR/scripts/"*.sh
+SCRIPTS_SRC="$SCRIPT_DIR/scripts"
 
-# Deploy hypridle and hyprlock
-if [ -f "$SCRIPT_DIR/hypr/hypridle.conf" ]; then
-    cp "$SCRIPT_DIR/hypr/hypridle.conf" "$HYPR_DIR/"
+# Deploy all .sh files from scripts directory
+if [ -d "$SCRIPTS_SRC" ]; then
+    for script in "$SCRIPTS_SRC"/*.sh; do
+        if [ -f "$script" ]; then
+            safe_copy "$script" "$HYPR_DIR/scripts/$(basename "$script")"
+        fi
+    done
+    # Make all scripts executable
+    chmod +x "$HYPR_DIR/scripts/"*.sh 2>/dev/null || true
+    echo -e "  ${GREEN}✓${NC} Made all scripts executable"
+else
+    echo -e "  ${RED}✗${NC} Scripts directory not found!"
 fi
-if [ -f "$SCRIPT_DIR/hypr/hyprlock.conf" ]; then
-    cp "$SCRIPT_DIR/hypr/hyprlock.conf" "$HYPR_DIR/"
-fi
+echo ""
 
-# Set default mode to Arcana
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY WALLPAPERS
+# ─────────────────────────────────────────────────────────────────────────────
+echo -e "${PURPLE}Deploying wallpapers...${NC}"
+if [ -d "$SCRIPT_DIR/wallpapers" ] && [ "$(ls -A "$SCRIPT_DIR/wallpapers" 2>/dev/null)" ]; then
+    for wallpaper in "$SCRIPT_DIR/wallpapers"/*; do
+        if [ -f "$wallpaper" ]; then
+            safe_copy "$wallpaper" "$HYPR_DIR/wallpapers/$(basename "$wallpaper")"
+        fi
+    done
+else
+    echo -e "  ${YELLOW}⚠${NC} No wallpapers found in source directory"
+fi
+echo ""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SET DEFAULT MODE
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Setting up default mode (Arcana)...${NC}"
 echo "arcana" > "$HYPR_DIR/.current-mode"
 
-# Create initial symlink and copy configs for Arcana
-ln -sf "$HYPR_DIR/themes/arcana/hyprland.conf" "$HYPR_DIR/hyprland.conf"
+# Create initial symlink for hyprland.conf
+safe_symlink "$HYPR_DIR/themes/arcana/hyprland.conf" "$HYPR_DIR/hyprland.conf"
+echo ""
 
-# Deploy initial active configs (Arcana mode) via symlinks to deployed themes
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY INITIAL ACTIVE CONFIGS (ARCANA)
+# ─────────────────────────────────────────────────────────────────────────────
+echo -e "${PURPLE}Setting up active config symlinks (Arcana mode)...${NC}"
+
+# Kitty
 rm -rf "$CONFIG_DIR/kitty"
 mkdir -p "$CONFIG_DIR/kitty"
-ln -sf "$HYPR_DIR/themes/arcana/kitty.conf" "$CONFIG_DIR/kitty/kitty.conf"
+safe_symlink "$HYPR_DIR/themes/arcana/kitty.conf" "$CONFIG_DIR/kitty/kitty.conf"
 
+# Rofi
 rm -rf "$CONFIG_DIR/rofi"
-ln -sf "$HYPR_DIR/themes/arcana/rofi" "$CONFIG_DIR/rofi"
+safe_symlink "$HYPR_DIR/themes/arcana/rofi" "$CONFIG_DIR/rofi"
 
+# Dunst
 rm -rf "$CONFIG_DIR/dunst"
-ln -sf "$HYPR_DIR/themes/arcana/dunst" "$CONFIG_DIR/dunst"
+safe_symlink "$HYPR_DIR/themes/arcana/dunst" "$CONFIG_DIR/dunst"
+echo ""
 
-# Deploy btop themes
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY BTOP THEMES
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Deploying btop themes...${NC}"
 mkdir -p "$CONFIG_DIR/btop/themes"
-cp -r "$SCRIPT_DIR/btop/themes/"* "$CONFIG_DIR/btop/themes/"
+safe_copy "$SCRIPT_DIR/btop/themes" "$CONFIG_DIR/btop/themes" true
+echo ""
 
-# Deploy ranger config
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY RANGER CONFIG
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Deploying ranger config...${NC}"
 mkdir -p "$CONFIG_DIR/ranger"
-cp "$SCRIPT_DIR/ranger/rc.conf" "$CONFIG_DIR/ranger/"
-cp "$SCRIPT_DIR/ranger/rifle.conf" "$CONFIG_DIR/ranger/"
-cp "$SCRIPT_DIR/ranger/scope.sh" "$CONFIG_DIR/ranger/"
-chmod +x "$CONFIG_DIR/ranger/scope.sh"
+safe_copy "$SCRIPT_DIR/ranger/rc.conf" "$CONFIG_DIR/ranger/rc.conf"
+safe_copy "$SCRIPT_DIR/ranger/rifle.conf" "$CONFIG_DIR/ranger/rifle.conf"
+safe_copy "$SCRIPT_DIR/ranger/scope.sh" "$CONFIG_DIR/ranger/scope.sh"
+if [ -f "$CONFIG_DIR/ranger/scope.sh" ]; then
+    chmod +x "$CONFIG_DIR/ranger/scope.sh"
+fi
+echo ""
 
-# Deploy micro colorschemes
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY MICRO COLORSCHEMES
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Deploying micro colorschemes...${NC}"
 mkdir -p "$CONFIG_DIR/micro/colorschemes"
-cp -r "$SCRIPT_DIR/micro/colorschemes/"* "$CONFIG_DIR/micro/colorschemes/"
+safe_copy "$SCRIPT_DIR/micro/colorschemes" "$CONFIG_DIR/micro/colorschemes" true
+echo ""
 
-# Deploy ekphos config
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY EKPHOS CONFIG
+# ─────────────────────────────────────────────────────────────────────────────
 echo -e "${PURPLE}Deploying ekphos config...${NC}"
 mkdir -p "$CONFIG_DIR/ekphos/themes"
-cp "$SCRIPT_DIR/ekphos/config.toml" "$CONFIG_DIR/ekphos/"
-cp -r "$SCRIPT_DIR/ekphos/themes/"* "$CONFIG_DIR/ekphos/themes/"
+safe_copy "$SCRIPT_DIR/ekphos/config.toml" "$CONFIG_DIR/ekphos/config.toml"
+safe_copy "$SCRIPT_DIR/ekphos/themes" "$CONFIG_DIR/ekphos/themes" true
+echo ""
 
+# ─────────────────────────────────────────────────────────────────────────────
+# DEPLOY ZSH CONFIG (if exists)
+# ─────────────────────────────────────────────────────────────────────────────
+if [ -f "$SCRIPT_DIR/zsh/.zshrc" ]; then
+    echo -e "${PURPLE}Deploying zsh config...${NC}"
+    if [ -f "$HOME/.zshrc" ]; then
+        cp "$HOME/.zshrc" "$BACKUP_DIR/.zshrc.bak" 2>/dev/null || true
+        echo -e "  ${YELLOW}⚠${NC} Backed up existing .zshrc"
+    fi
+    safe_copy "$SCRIPT_DIR/zsh/.zshrc" "$HOME/.zshrc"
+    echo ""
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# VERIFY QUICKSHELL SETUP
+# ─────────────────────────────────────────────────────────────────────────────
+echo -e "${PURPLE}Verifying Quickshell setup...${NC}"
+QUICKSHELL_OK=true
+
+# Check arcana shell.qml exists
+if [ -f "$HYPR_DIR/themes/arcana/quickshell/shell.qml" ]; then
+    echo -e "  ${GREEN}✓${NC} Arcana shell.qml found"
+else
+    echo -e "  ${RED}✗${NC} Arcana shell.qml missing!"
+    QUICKSHELL_OK=false
+fi
+
+# Check ghost shell.qml exists
+if [ -f "$HYPR_DIR/themes/ghost/quickshell/shell.qml" ]; then
+    echo -e "  ${GREEN}✓${NC} Ghost shell.qml found"
+else
+    echo -e "  ${RED}✗${NC} Ghost shell.qml missing!"
+    QUICKSHELL_OK=false
+fi
+
+# Check shared components in arcana/quickshell/shared
+if [ -d "$HYPR_DIR/themes/arcana/quickshell/shared" ]; then
+    echo -e "  ${GREEN}✓${NC} Arcana quickshell/shared directory exists"
+else
+    echo -e "  ${RED}✗${NC} Arcana quickshell/shared missing!"
+    QUICKSHELL_OK=false
+fi
+
+# Check shared components in ghost/quickshell/shared
+if [ -d "$HYPR_DIR/themes/ghost/quickshell/shared" ]; then
+    echo -e "  ${GREEN}✓${NC} Ghost quickshell/shared directory exists"
+else
+    echo -e "  ${RED}✗${NC} Ghost quickshell/shared missing!"
+    QUICKSHELL_OK=false
+fi
+
+# Check required shared components in arcana
+for comp in "WallpaperWidget.qml" "SystemStats.qml" "PowerMenu.qml" "NotificationCenter.qml" "WeatherWidget.qml"; do
+    if [ -f "$HYPR_DIR/themes/arcana/quickshell/shared/$comp" ]; then
+        echo -e "  ${GREEN}✓${NC} Arcana shared/$comp found"
+    else
+        echo -e "  ${YELLOW}⚠${NC} Arcana shared/$comp not found"
+    fi
+done
+
+# Check if quickshell is installed
+if command -v quickshell &>/dev/null; then
+    echo -e "  ${GREEN}✓${NC} Quickshell is installed"
+else
+    echo -e "  ${RED}✗${NC} Quickshell not found! Install it from AUR: yay -S quickshell-git"
+    QUICKSHELL_OK=false
+fi
+echo ""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# COMPLETION SUMMARY
+# ─────────────────────────────────────────────────────────────────────────────
 echo ""
 echo "╔══════════════════════════════════════════════════════════════════════════╗"
 echo "║                         DEPLOYMENT COMPLETE!                              ║"
 echo "╚══════════════════════════════════════════════════════════════════════════╝"
 echo ""
-echo -e "${PURPLE}Themes deployed:${NC}"
-echo "  ~/.config/hypr/themes/arcana/  (Obsidian Arcana - aesthetic)"
-echo "  ~/.config/hypr/themes/ghost/   (Ghost Mode - pentesting)"
+echo -e "${PURPLE}Deployed Locations:${NC}"
+echo "  ~/.config/hypr/               - Hyprland base configs & scripts"
+echo "  ~/.config/hypr/themes/arcana/ - Obsidian Arcana theme + Quickshell"
+echo "  ~/.config/hypr/themes/ghost/  - Ghost Mode theme + Quickshell"
+echo "  ~/.config/hypr/themes/shared/ - Shared QML components"
+echo "  ~/.config/hypr/scripts/       - Mode switching & utility scripts"
+echo "  ~/.config/hypr/wallpapers/    - Wallpaper collection"
 echo ""
-echo -e "${CYAN}Mode switching:${NC}"
+echo -e "${CYAN}Quickshell Structure:${NC}"
+echo "  themes/arcana/quickshell/     - Arcana TopBar, Dock, shell.qml"
+echo "  themes/ghost/quickshell/      - Ghost TopBar, PentestDock, shell.qml"
+echo "  themes/arcana/shared -> shared/ (symlink for imports)"
+echo "  themes/ghost/shared -> shared/  (symlink for imports)"
+echo ""
+echo -e "${CYAN}Active Configs (via symlinks):${NC}"
+echo "  ~/.config/kitty/    -> Arcana theme"
+echo "  ~/.config/rofi/     -> Arcana theme"
+echo "  ~/.config/dunst/    -> Arcana theme"
+echo ""
+echo -e "${CYAN}Mode Switching:${NC}"
 echo "  Keybind: SUPER + SHIFT + G"
 echo "  Script:  ~/.config/hypr/scripts/switch-mode.sh"
 echo ""
-echo -e "${YELLOW}Ghost Mode features:${NC}"
+echo -e "${YELLOW}Ghost Mode Features:${NC}"
 echo "  • ProtonVPN auto-connect"
 echo "  • UFW kill-switch activation"
 echo "  • Auto-launch: Burpsuite, Wireshark, Terminal"
 echo ""
-echo -e "${PURPLE}Wallpaper controls (Arcana mode):${NC}"
+echo -e "${PURPLE}Wallpaper Controls (Arcana mode):${NC}"
 echo "  SUPER + W         - Open wallpaper menu"
 echo "  SUPER + SHIFT + W - Cycle to next wallpaper"
 echo ""
-echo -e "${YELLOW}Don't forget to:${NC}"
-echo "  1. Add your wallpaper to ~/.config/hypr/wallpapers/wallpaper.jpg"
-echo "  2. Log out and select Hyprland from your display manager"
-echo "  3. Install swaybg for Ghost Mode black background"
+echo -e "${YELLOW}Scripts Deployed:${NC}"
+if [ -d "$HYPR_DIR/scripts" ]; then
+    ls -1 "$HYPR_DIR/scripts/"*.sh 2>/dev/null | xargs -I{} basename {} | sed 's/^/  • /'
+fi
+echo ""
+
+if [ "$QUICKSHELL_OK" = false ]; then
+    echo -e "${RED}╔══════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${RED}║ WARNING: Quickshell setup has issues - check messages above!             ║${NC}"
+    echo -e "${RED}╚══════════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+fi
+
+echo -e "${GREEN}Next Steps:${NC}"
+echo "  1. Log out and select Hyprland from your display manager"
+echo "  2. Quickshell will auto-start via exec-once in hyprland.conf"
+echo "  3. Use SUPER + SHIFT + G to switch between modes"
+echo "  4. Use SUPER + W to change wallpapers in Arcana mode"
 echo ""
 if [ "$NEEDS_BACKUP" = true ]; then
     echo -e "${GREEN}Your old configs were backed up to:${NC}"
     echo "  $BACKUP_DIR"
+    echo ""
 fi

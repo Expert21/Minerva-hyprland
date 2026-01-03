@@ -1,7 +1,6 @@
 import Quickshell
 import Quickshell.Wayland
 import QtQuick
-import "../shared"
 
 ShellRoot {
     id: root

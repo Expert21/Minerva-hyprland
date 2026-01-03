@@ -4,17 +4,15 @@ import QtQuick
 import QtQuick.Layouts
 
 // Arcana Dock - Left side vertical layout
-Panel {
+PanelWindow {
     id: dock
-    anchors {
-        left: parent.left
-        top: parent.top
-        bottom: parent.bottom
-    }
-    topMargin: 44
-    bottomMargin: 8
-    leftMargin: 8
-    width: 56
+    anchors.left: true
+    anchors.top: true
+    anchors.bottom: true
+    margins.top: 44
+    margins.bottom: 8
+    margins.left: 8
+    implicitWidth: 56
     color: "transparent"
 
     // Font Awesome loader

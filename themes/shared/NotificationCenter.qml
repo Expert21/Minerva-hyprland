@@ -4,13 +4,16 @@ import QtQuick
 import QtQuick.Layouts
 
 // Notification Center - Dunst history panel
-Panel {
+PanelWindow {
     id: notificationCenter
-    anchors.centerIn: parent
-    width: 400
-    height: 500
+    // Fullscreen overlay with centered content
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
     color: "transparent"
     visible: false
+    focusable: true
 
     property color accentColor: "#bd93f9"
     property color bgColor: "#e61a1025"
@@ -18,16 +21,15 @@ Panel {
     property var notifications: []
 
     Keys.onEscapePressed: notificationCenter.visible = false
-    focus: visible
 
     // Fetch dunst history
     Process {
         id: historyProc
         command: ["/bin/sh", "-c", "dunstctl history | jq -c '.data[0][]' 2>/dev/null"]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "") {
-                    var lines = content.trim().split("\n")
+            onTextChanged: {
+                if (text.trim() !== "") {
+                    var lines = text.trim().split("\n")
                     var items = []
                     for (var i = 0; i < Math.min(lines.length, 20); i++) {
                         try {
@@ -59,7 +61,9 @@ Panel {
     }
 
     Rectangle {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: 400
+        height: 500
         color: bgColor
         border.color: accentColor
         border.width: 2

@@ -3,17 +3,14 @@ import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 import QtQuick
 import QtQuick.Layouts
-import "../shared"
 
-Panel {
+PanelWindow {
     id: topBar
-    anchors {
-        top: parent.top
-        left: parent.left
-        right: parent.right
-    }
-    leftMargin: 64  // Space for left Dock
-    height: 36
+    anchors.top: true
+    anchors.left: true
+    anchors.right: true
+    margins.left: 64  // Space for left Dock
+    implicitHeight: 36
     color: "#D91a1025"
     
     signal wallpaperToggle()

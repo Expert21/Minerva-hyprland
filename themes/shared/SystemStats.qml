@@ -26,9 +26,9 @@ Item {
             "echo \"$cpu $mem $memtotal\""
         ]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "") {
-                    var parts = content.trim().split(" ")
+            onTextChanged: {
+                if (text.trim() !== "") {
+                    var parts = text.trim().split(" ")
                     if (parts.length >= 3) {
                         statsWidget.cpuUsage = parseInt(parts[0]) || 0
                         statsWidget.memUsage = parseInt(parts[1]) || 0

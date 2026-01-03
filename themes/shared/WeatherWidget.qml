@@ -37,9 +37,9 @@ Item {
         id: weatherProc
         command: ["/bin/sh", "-c", "curl -s 'wttr.in/Sherman+TX?format=%t|%C' 2>/dev/null"]
         stdout: StdioCollector {
-            onContentChanged: {
-                if (content.trim() !== "" && !content.includes("Unknown")) {
-                    var parts = content.trim().split("|")
+            onTextChanged: {
+                if (text.trim() !== "" && !text.includes("Unknown")) {
+                    var parts = text.trim().split("|")
                     if (parts.length >= 2) {
                         weatherWidget.temperature = parts[0].replace("+", "")
                         weatherWidget.condition = parts[1]

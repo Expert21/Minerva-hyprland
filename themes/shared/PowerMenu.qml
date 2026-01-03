@@ -4,20 +4,22 @@ import QtQuick
 import QtQuick.Layouts
 
 // Power Menu - Arcana styled logout/reboot/shutdown
-Panel {
+PanelWindow {
     id: powerMenu
-    anchors.centerIn: parent
-    width: 450
-    height: 200
+    // Fullscreen overlay with centered content
+    anchors.top: true
+    anchors.bottom: true
+    anchors.left: true
+    anchors.right: true
     color: "transparent"
     visible: false
+    focusable: true
 
     property color accentColor: "#bd93f9"
     property color bgColor: "#e61a1025"
     property string fontFamily: "Sans Serif"
 
     Keys.onEscapePressed: powerMenu.visible = false
-    focus: visible
 
     // Power actions
     Process { id: lockProc; command: ["hyprlock"] }
@@ -26,7 +28,9 @@ Panel {
     Process { id: shutdownProc; command: ["systemctl", "poweroff"] }
 
     Rectangle {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: 450
+        height: 200
         color: bgColor
         border.color: accentColor
         border.width: 2
