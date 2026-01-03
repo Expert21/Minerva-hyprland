@@ -5,18 +5,12 @@ import "../shared"
 
 ShellRoot {
     id: root
-    property bool cmdVisible: false
     property bool wallpaperVisible: false
 
-    // Ghost Mode Shell
-    StatusBar {
-        onToggleCommandCenter: root.cmdVisible = !root.cmdVisible
-        onWallpaperToggle: root.wallpaperVisible = !root.wallpaperVisible
-    }
+    // Ghost Mode Shell - TopBar at top, PentestDock on right
+    TopBar {}
     
-    CommandCenter {
-        visible: root.cmdVisible
-    }
+    PentestDock {}
     
     WallpaperWidget {
         themeMode: "ghost"

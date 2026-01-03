@@ -1,0 +1,70 @@
+# Btop Ghost Mode Theme
+# Minimalistic pentesting aesthetic - black/cyan/green
+
+# Main bg - pure black
+theme[main_bg]="#000000"
+
+# Main fg - light gray
+theme[main_fg]="#cccccc"
+
+# Title color - cyan
+theme[title]="#00ffff"
+
+# Highlight color - cyan
+theme[hi_fg]="#00ffff"
+
+# Selected item color
+theme[selected_bg]="#0a0a0a"
+theme[selected_fg]="#00ffff"
+
+# Graph colors
+theme[proc_misc]="#00ff00"
+
+# Box border colors
+theme[inactive_fg]="#333333"
+
+# CPU colors (cyan gradient)
+theme[cpu_box]="#00ffff"
+theme[cpu_start]="#005555"
+theme[cpu_mid]="#00aaaa"
+theme[cpu_end]="#00ffff"
+
+# Memory colors (green gradient)
+theme[mem_box]="#00ff00"
+theme[mem_start]="#005500"
+theme[mem_mid]="#00aa00"
+theme[mem_end]="#00ff00"
+
+# Network colors (cyan)
+theme[net_box]="#00ffff"
+theme[download_start]="#005555"
+theme[download_mid]="#00aaaa"
+theme[download_end]="#00ffff"
+theme[upload_start]="#003333"
+theme[upload_mid]="#006666"
+theme[upload_end]="#00aaaa"
+
+# Process box colors
+theme[proc_box]="#00ffff"
+
+# Divider line color
+theme[div_line]="#333333"
+
+# Temperature graph (green to red for warnings)
+theme[temp_start]="#00ff00"
+theme[temp_mid]="#ffff00"
+theme[temp_end]="#ff3333"
+
+# Free and cached (for memory meter)
+theme[free_start]="#0a0a0a"
+theme[free_mid]="#1a1a1a"
+theme[free_end]="#333333"
+theme[cached_start]="#003333"
+theme[cached_mid]="#005555"
+theme[cached_end]="#00aaaa"
+theme[available_start]="#005500"
+theme[available_mid]="#00aa00"
+theme[available_end]="#00ff00"
+theme[used_start]="#00aaaa"
+theme[used_mid]="#00dddd"
+theme[used_end]="#00ffff"

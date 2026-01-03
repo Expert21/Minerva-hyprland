@@ -1,0 +1,68 @@
+# Obsidian Arcana Theme for Ekphos
+# Dark fantasy purple aesthetic
+
+[colors.primary]
+background = "#0d0d0d"
+foreground = "#e0e0e0"
+dim_foreground = "#7c6f8c"
+bright_foreground = "#ffffff"
+
+[colors.cursor]
+text = "#0d0d0d"
+cursor = "#c77dff"
+
+[colors.vi_mode_cursor]
+text = "#0d0d0d"
+cursor = "#9d4edd"
+
+[colors.search.matches]
+foreground = "#0d0d0d"
+background = "#9d4edd"
+
+[colors.search.focused_match]
+foreground = "#0d0d0d"
+background = "#c77dff"
+
+[colors.footer_bar]
+foreground = "#e0e0e0"
+background = "#1a1a2e"
+
+[colors.hints.start]
+foreground = "#0d0d0d"
+background = "#ffd93d"
+
+[colors.hints.end]
+foreground = "#0d0d0d"
+background = "#9d4edd"
+
+[colors.selection]
+text = "#e0e0e0"
+background = "#7b2cbf"
+
+[colors.normal]
+black = "#1a1a2e"
+red = "#ff6b6b"
+green = "#4ecdc4"
+yellow = "#ffd93d"
+blue = "#7b2cbf"
+magenta = "#c77dff"
+cyan = "#6dd3ce"
+white = "#e0e0e0"
+
+[colors.bright]
+black = "#3d3d5c"
+red = "#ff8787"
+green = "#72e2db"
+yellow = "#ffe066"
+blue = "#9d4edd"
+magenta = "#e0aaff"
+cyan = "#8fe3df"
+white = "#ffffff"
+
+[[colors.indexed_colors]]
+index = 16
+color = "#ff6b6b"
+
+[[colors.indexed_colors]]
+index = 17
+color = "#c77dff"

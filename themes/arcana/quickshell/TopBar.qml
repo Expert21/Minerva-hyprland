@@ -3,6 +3,7 @@ import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 import QtQuick
 import QtQuick.Layouts
+import "../shared"
 
 Panel {
     id: topBar
@@ -11,6 +12,7 @@ Panel {
         left: parent.left
         right: parent.right
     }
+    leftMargin: 64  // Space for left Dock
     height: 36
     color: "#D91a1025"
     
@@ -35,9 +37,6 @@ Panel {
                     property bool isActive: modelData.id === Hyprland.focusedWorkspace?.id
                     color: isActive ? "#bd93f9" : "#44475a"
                     
-                    // Glow effect for active workspace
-                    layer.enabled: isActive
-                    
                     Text {
                         anchors.centerIn: parent
                         text: modelData.id
@@ -54,18 +53,28 @@ Panel {
             }
         }
         
+        // System Stats (CPU/RAM)
+        SystemStats {
+            Layout.alignment: Qt.AlignLeft
+            Layout.leftMargin: 16
+        }
+        
         // Window Title
         Text {
             Layout.alignment: Qt.AlignHCenter
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
-            text: Hyprland.focusedWindow ? Hyprland.focusedWindow.title : "..."
+            text: Hyprland.focusedWindow ? Hyprland.focusedWindow.title : "✨"
             color: "#f8f8f2"
             elide: Text.ElideRight
             font.family: "Sans Serif" 
-            font.pixelSize: 14
+            font.pixelSize: 13
         }
         
+        // Weather
+        WeatherWidget {
+            Layout.alignment: Qt.AlignRight
+        }
 
         // System Tray
         Row {
@@ -103,12 +112,12 @@ Panel {
             }
         }
         
-        // Time & Date
+        // Right controls
         Row {
             Layout.alignment: Qt.AlignRight
             spacing: 12
             
-            // Wallpaper Button
+            // Wallpaper Button (Font Awesome)
             Rectangle {
                 width: 28
                 height: 28
@@ -119,8 +128,10 @@ Panel {
                 
                 Text {
                     anchors.centerIn: parent
-                    text: "🖼"
-                    font.pixelSize: 14
+                    text: "\uf03e"  // image icon
+                    color: wpHover.hovered ? "#1a1025" : "#bd93f9"
+                    font.family: "Font Awesome 6 Free Solid"
+                    font.pixelSize: 12
                 }
                 
                 HoverHandler { id: wpHover }
@@ -135,6 +146,7 @@ Panel {
                 color: "#bd93f9"
                 font.bold: true
                 font.pixelSize: 14
+                anchors.verticalCenter: parent.verticalCenter
                 
                 Timer {
                     interval: 1000
@@ -146,3 +158,4 @@ Panel {
         }
     }
 }
+

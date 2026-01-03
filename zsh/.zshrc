@@ -193,8 +193,8 @@ export LESS='-R --use-color -Dd+r$Du+b'
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Path additions (uncomment and modify as needed)
-# export PATH="$HOME/.local/bin:$PATH"
-# export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Custom Prompt Segment (for agnoster theme)

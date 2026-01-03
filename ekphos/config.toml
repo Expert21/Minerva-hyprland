@@ -1,0 +1,4 @@
+notes_dir = "~/Documents/ekphos"
+welcome_shown = true
+theme = "arcana"
+show_empty_dir = true

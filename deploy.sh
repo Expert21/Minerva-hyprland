@@ -24,10 +24,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# Configs to deploy
+# Configs to deploy (no waybar - using quickshell instead)
 CONFIGS=(
     "hypr"
-    "waybar"
     "kitty"
     "rofi"
     "dunst"
@@ -58,29 +57,35 @@ fi
 
 # Create hypr directory structure
 echo -e "${PURPLE}Setting up directory structure...${NC}"
-mkdir -p "$HYPR_DIR/themes/arcana/waybar"
 mkdir -p "$HYPR_DIR/themes/arcana/rofi"
 mkdir -p "$HYPR_DIR/themes/arcana/dunst"
-mkdir -p "$HYPR_DIR/themes/ghost/waybar"
+mkdir -p "$HYPR_DIR/themes/arcana/quickshell"
 mkdir -p "$HYPR_DIR/themes/ghost/rofi"
 mkdir -p "$HYPR_DIR/themes/ghost/dunst"
+mkdir -p "$HYPR_DIR/themes/ghost/quickshell"
+mkdir -p "$HYPR_DIR/themes/shared"
 mkdir -p "$HYPR_DIR/scripts"
 mkdir -p "$HYPR_DIR/wallpapers"
 
 # Deploy theme files
 echo -e "${PURPLE}Deploying Arcana theme...${NC}"
 cp "$SCRIPT_DIR/themes/arcana/hyprland.conf" "$HYPR_DIR/themes/arcana/"
-cp -r "$SCRIPT_DIR/themes/arcana/waybar/"* "$HYPR_DIR/themes/arcana/waybar/"
 cp "$SCRIPT_DIR/themes/arcana/kitty.conf" "$HYPR_DIR/themes/arcana/"
 cp -r "$SCRIPT_DIR/themes/arcana/rofi/"* "$HYPR_DIR/themes/arcana/rofi/"
 cp "$SCRIPT_DIR/themes/arcana/dunst/dunstrc" "$HYPR_DIR/themes/arcana/dunst/"
+cp -r "$SCRIPT_DIR/themes/arcana/quickshell/"* "$HYPR_DIR/themes/arcana/quickshell/"
+cp "$SCRIPT_DIR/themes/arcana/hyprlock.conf" "$HYPR_DIR/themes/arcana/"
 
 echo -e "${CYAN}Deploying Ghost Mode theme...${NC}"
 cp "$SCRIPT_DIR/themes/ghost/hyprland.conf" "$HYPR_DIR/themes/ghost/"
-cp -r "$SCRIPT_DIR/themes/ghost/waybar/"* "$HYPR_DIR/themes/ghost/waybar/"
 cp "$SCRIPT_DIR/themes/ghost/kitty.conf" "$HYPR_DIR/themes/ghost/"
 cp -r "$SCRIPT_DIR/themes/ghost/rofi/"* "$HYPR_DIR/themes/ghost/rofi/"
 cp "$SCRIPT_DIR/themes/ghost/dunst/dunstrc" "$HYPR_DIR/themes/ghost/"
+cp -r "$SCRIPT_DIR/themes/ghost/quickshell/"* "$HYPR_DIR/themes/ghost/quickshell/"
+cp "$SCRIPT_DIR/themes/ghost/hyprlock.conf" "$HYPR_DIR/themes/ghost/"
+
+echo -e "${PURPLE}Deploying shared components...${NC}"
+cp -r "$SCRIPT_DIR/themes/shared/"* "$HYPR_DIR/themes/shared/"
 
 # Deploy scripts
 echo -e "${PURPLE}Deploying scripts...${NC}"
@@ -89,6 +94,10 @@ cp "$SCRIPT_DIR/scripts/vpn-status.sh" "$HYPR_DIR/scripts/"
 cp "$SCRIPT_DIR/scripts/wallpaper.sh" "$HYPR_DIR/scripts/"
 cp "$SCRIPT_DIR/scripts/wallpaper-switcher.sh" "$HYPR_DIR/scripts/"
 cp "$SCRIPT_DIR/scripts/wallpaper-menu.sh" "$HYPR_DIR/scripts/"
+cp "$SCRIPT_DIR/scripts/pentest-tools.sh" "$HYPR_DIR/scripts/"
+cp "$SCRIPT_DIR/scripts/rofi-emoji.sh" "$HYPR_DIR/scripts/"
+cp "$SCRIPT_DIR/scripts/rofi-pass.sh" "$HYPR_DIR/scripts/"
+cp "$SCRIPT_DIR/scripts/rofi-projects.sh" "$HYPR_DIR/scripts/"
 chmod +x "$HYPR_DIR/scripts/"*.sh
 
 # Deploy hypridle and hyprlock
@@ -106,19 +115,40 @@ echo "arcana" > "$HYPR_DIR/.current-mode"
 # Create initial symlink and copy configs for Arcana
 ln -sf "$HYPR_DIR/themes/arcana/hyprland.conf" "$HYPR_DIR/hyprland.conf"
 
-# Deploy initial active configs (Arcana mode)
-rm -rf "$CONFIG_DIR/waybar"
-cp -r "$HYPR_DIR/themes/arcana/waybar" "$CONFIG_DIR/waybar"
-
+# Deploy initial active configs (Arcana mode) via symlinks to deployed themes
 rm -rf "$CONFIG_DIR/kitty"
 mkdir -p "$CONFIG_DIR/kitty"
-cp "$HYPR_DIR/themes/arcana/kitty.conf" "$CONFIG_DIR/kitty/kitty.conf"
+ln -sf "$HYPR_DIR/themes/arcana/kitty.conf" "$CONFIG_DIR/kitty/kitty.conf"
 
 rm -rf "$CONFIG_DIR/rofi"
-cp -r "$HYPR_DIR/themes/arcana/rofi" "$CONFIG_DIR/rofi"
+ln -sf "$HYPR_DIR/themes/arcana/rofi" "$CONFIG_DIR/rofi"
 
 rm -rf "$CONFIG_DIR/dunst"
-cp -r "$HYPR_DIR/themes/arcana/dunst" "$CONFIG_DIR/dunst"
+ln -sf "$HYPR_DIR/themes/arcana/dunst" "$CONFIG_DIR/dunst"
+
+# Deploy btop themes
+echo -e "${PURPLE}Deploying btop themes...${NC}"
+mkdir -p "$CONFIG_DIR/btop/themes"
+cp -r "$SCRIPT_DIR/btop/themes/"* "$CONFIG_DIR/btop/themes/"
+
+# Deploy ranger config
+echo -e "${PURPLE}Deploying ranger config...${NC}"
+mkdir -p "$CONFIG_DIR/ranger"
+cp "$SCRIPT_DIR/ranger/rc.conf" "$CONFIG_DIR/ranger/"
+cp "$SCRIPT_DIR/ranger/rifle.conf" "$CONFIG_DIR/ranger/"
+cp "$SCRIPT_DIR/ranger/scope.sh" "$CONFIG_DIR/ranger/"
+chmod +x "$CONFIG_DIR/ranger/scope.sh"
+
+# Deploy micro colorschemes
+echo -e "${PURPLE}Deploying micro colorschemes...${NC}"
+mkdir -p "$CONFIG_DIR/micro/colorschemes"
+cp -r "$SCRIPT_DIR/micro/colorschemes/"* "$CONFIG_DIR/micro/colorschemes/"
+
+# Deploy ekphos config
+echo -e "${PURPLE}Deploying ekphos config...${NC}"
+mkdir -p "$CONFIG_DIR/ekphos/themes"
+cp "$SCRIPT_DIR/ekphos/config.toml" "$CONFIG_DIR/ekphos/"
+cp -r "$SCRIPT_DIR/ekphos/themes/"* "$CONFIG_DIR/ekphos/themes/"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════════════════════╗"

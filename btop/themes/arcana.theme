@@ -1,0 +1,70 @@
+# Btop Obsidian Arcana Theme
+# Dark fantasy purple aesthetic
+
+# Main bg
+theme[main_bg]="#0d0d0d"
+
+# Main fg
+theme[main_fg]="#e0e0e0"
+
+# Title color
+theme[title]="#c77dff"
+
+# Highlight color
+theme[hi_fg]="#7b2cbf"
+
+# Selected item color
+theme[selected_bg]="#1a1a2e"
+theme[selected_fg]="#c77dff"
+
+# Graph colors (gradient from purple to lavender)
+theme[proc_misc]="#9d4edd"
+
+# Box border colors
+theme[inactive_fg]="#3d3d5c"
+
+# CPU colors (purple gradient)
+theme[cpu_box]="#7b2cbf"
+theme[cpu_start]="#4a0072"
+theme[cpu_mid]="#7b2cbf"
+theme[cpu_end]="#c77dff"
+
+# Memory colors (magenta gradient)
+theme[mem_box]="#9d4edd"
+theme[mem_start]="#6b0096"
+theme[mem_mid]="#9d4edd"
+theme[mem_end]="#e0aaff"
+
+# Network colors (lavender)
+theme[net_box]="#c77dff"
+theme[download_start]="#7b2cbf"
+theme[download_mid]="#9d4edd"
+theme[download_end]="#c77dff"
+theme[upload_start]="#4a0072"
+theme[upload_mid]="#7b2cbf"
+theme[upload_end]="#9d4edd"
+
+# Process box colors
+theme[proc_box]="#7b2cbf"
+
+# Divider line color
+theme[div_line]="#3d3d5c"
+
+# Temperature graph (cool purple to warm magenta)
+theme[temp_start]="#7b2cbf"
+theme[temp_mid]="#c77dff"
+theme[temp_end]="#ff6b6b"
+
+# Free and cached (for memory meter)
+theme[free_start]="#1a1a2e"
+theme[free_mid]="#3d3d5c"
+theme[free_end]="#5c5c8a"
+theme[cached_start]="#4a0072"
+theme[cached_mid]="#7b2cbf"
+theme[cached_end]="#9d4edd"
+theme[available_start]="#6b0096"
+theme[available_mid]="#9d4edd"
+theme[available_end]="#c77dff"
+theme[used_start]="#7b2cbf"
+theme[used_mid]="#c77dff"
+theme[used_end]="#e0aaff"

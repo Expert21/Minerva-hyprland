@@ -37,10 +37,6 @@ swap_configs() {
     rm -f "$HYPR_DIR/hyprland.conf"
     ln -sf "$THEMES_DIR/$mode/hyprland.conf" "$HYPR_DIR/hyprland.conf"
     
-    # Symlink waybar directory
-    rm -rf "$CONFIG_DIR/waybar"
-    ln -sf "$THEMES_DIR/$mode/waybar" "$CONFIG_DIR/waybar"
-    
     # Symlink kitty config
     rm -rf "$CONFIG_DIR/kitty"
     mkdir -p "$CONFIG_DIR/kitty"
@@ -53,6 +49,10 @@ swap_configs() {
     # Symlink dunst directory
     rm -rf "$CONFIG_DIR/dunst"
     ln -sf "$THEMES_DIR/$mode/dunst" "$CONFIG_DIR/dunst"
+    
+    # Symlink hyprlock config
+    rm -f "$HYPR_DIR/hyprlock.conf"
+    ln -sf "$THEMES_DIR/$mode/hyprlock.conf" "$HYPR_DIR/hyprlock.conf"
     
     echo -e "${GREEN}[✓] Configs symlinked to $mode theme${NC}"
 }
