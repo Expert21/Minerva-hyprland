@@ -22,7 +22,6 @@ CORE=(
     hypridle
     xdg-desktop-portal-hyprland
 )
-
 # Bar and UI
 UI=(
     waybar
