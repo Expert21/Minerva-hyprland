@@ -60,23 +60,41 @@ swap_configs() {
 kill_services() {
     echo -e "${CYAN}[*] Stopping services...${NC}"
     
-    # Try graceful termination first (SIGTERM)
-    pkill quickshell 2>/dev/null || true
-    pkill -x dunst 2>/dev/null || true
-    pkill -x swww-daemon 2>/dev/null || true
-    pkill -x swaybg 2>/dev/null || true
+    local services=("quickshell" "dunst" "swww-daemon" "swaybg")
     
-    # Give them a moment to exit cleanly
-    sleep 0.5
+    for service in "${services[@]}"; do
+        if pgrep -x "$service" >/dev/null; then
+            pkill -x "$service" 2>/dev/null || true
+        fi
+    done
     
-    # Force kill any survivors (SIGKILL)
-    pkill -9 quickshell 2>/dev/null || true
-    pkill -9 -x dunst 2>/dev/null || true
-    pkill -9 -x swww-daemon 2>/dev/null || true
-    pkill -9 -x swaybg 2>/dev/null || true
+    # Wait for them to exit
+    local timeout=20 # 2 seconds (20 * 0.1)
+    local count=0
     
-    # Final brief wait to ensure they're gone
-    sleep 0.5
+    while [ $count -lt $timeout ]; do
+        local still_running=false
+        for service in "${services[@]}"; do
+            if pgrep -x "$service" >/dev/null; then
+                still_running=true
+                break
+            fi
+        done
+        
+        if [ "$still_running" = false ]; then
+            break
+        fi
+        
+        sleep 0.1
+        ((count++))
+    done
+    
+    # Force kill if still running
+    for service in "${services[@]}"; do
+        if pgrep -x "$service" >/dev/null; then
+            pkill -9 -x "$service" 2>/dev/null || true
+        fi
+    done
     
     echo -e "${GREEN}[✓] Services stopped${NC}"
 }
@@ -99,7 +117,7 @@ activate_ghost_mode() {
     
     # Start waybar and dunst with new configs
     sleep 0.5
-    quickshell -p "$THEMES_DIR/ghost/quickshell/shell.qml" &
+    quickshell -p "$THEMES_DIR/ghost/quickshell/shell.qml" > /tmp/quickshell-ghost.log 2>&1 &
     disown
     dunst &
     disown
@@ -261,7 +279,7 @@ EOFUFW
     
     # Start waybar and dunst with new configs
     sleep 0.3
-    quickshell -p "$THEMES_DIR/arcana/quickshell/shell.qml" &
+    quickshell -p "$THEMES_DIR/arcana/quickshell/shell.qml" > /tmp/quickshell-arcana.log 2>&1 &
     disown
     dunst &
     disown
