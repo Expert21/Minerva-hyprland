@@ -60,7 +60,7 @@ swap_configs() {
 kill_services() {
     echo -e "${CYAN}[*] Stopping services...${NC}"
     
-    local services=("quickshell" "dunst" "swww-daemon" "swaybg")
+    local services=("dunst" "swww-daemon" "swaybg")
     
     for service in "${services[@]}"; do
         if pgrep -x "$service" >/dev/null; then
@@ -117,8 +117,7 @@ activate_ghost_mode() {
     
     # Start waybar and dunst with new configs
     sleep 0.5
-    quickshell -p "$THEMES_DIR/ghost/quickshell/shell.qml" > /tmp/quickshell-ghost.log 2>&1 &
-    disown
+
     dunst &
     disown
     
@@ -279,8 +278,7 @@ EOFUFW
     
     # Start waybar and dunst with new configs
     sleep 0.3
-    quickshell -p "$THEMES_DIR/arcana/quickshell/shell.qml" > /tmp/quickshell-arcana.log 2>&1 &
-    disown
+
     dunst &
     disown
     

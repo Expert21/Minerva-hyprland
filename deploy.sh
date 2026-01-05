@@ -108,11 +108,7 @@ fi
 echo -e "${PURPLE}Setting up directory structure...${NC}"
 mkdir -p "$HYPR_DIR/themes/arcana/rofi"
 mkdir -p "$HYPR_DIR/themes/arcana/dunst"
-mkdir -p "$HYPR_DIR/themes/arcana/quickshell"
-mkdir -p "$HYPR_DIR/themes/ghost/rofi"
-mkdir -p "$HYPR_DIR/themes/ghost/dunst"
-mkdir -p "$HYPR_DIR/themes/ghost/quickshell"
-mkdir -p "$HYPR_DIR/themes/shared"
+
 mkdir -p "$HYPR_DIR/scripts"
 mkdir -p "$HYPR_DIR/wallpapers"
 echo -e "${GREEN}✓ Directory structure created${NC}"
@@ -127,39 +123,7 @@ safe_copy "$SCRIPT_DIR/hypr/hypridle.conf" "$HYPR_DIR/hypridle.conf"
 safe_copy "$SCRIPT_DIR/hypr/hyprlock.conf" "$HYPR_DIR/hyprlock-base.conf"
 echo ""
 
-# ─────────────────────────────────────────────────────────────────────────────
-# DEPLOY SHARED QUICKSHELL COMPONENTS
-# Quickshell requires all QML files in the same directory for simple setups.
-# We copy shared components directly into each theme's quickshell folder.
-# ─────────────────────────────────────────────────────────────────────────────
-echo -e "${PURPLE}Deploying shared Quickshell components...${NC}"
-SHARED_SRC="$SCRIPT_DIR/themes/shared"
 
-if [ -d "$SHARED_SRC" ]; then
-    # Copy shared QML files directly into arcana/quickshell/
-    for qml_file in "$SHARED_SRC"/*.qml; do
-        if [ -f "$qml_file" ]; then
-            cp "$qml_file" "$HYPR_DIR/themes/arcana/quickshell/"
-            echo -e "  ${GREEN}✓${NC} Copied $(basename "$qml_file") to arcana/quickshell/"
-        fi
-    done
-    
-    # Copy shared QML files directly into ghost/quickshell/
-    for qml_file in "$SHARED_SRC"/*.qml; do
-        if [ -f "$qml_file" ]; then
-            cp "$qml_file" "$HYPR_DIR/themes/ghost/quickshell/"
-            echo -e "  ${GREEN}✓${NC} Copied $(basename "$qml_file") to ghost/quickshell/"
-        fi
-    done
-    
-    # Also keep a copy in themes/shared for reference
-    mkdir -p "$HYPR_DIR/themes/shared"
-    cp -r "$SHARED_SRC"/* "$HYPR_DIR/themes/shared/" 2>/dev/null || true
-    echo -e "  ${GREEN}✓${NC} Copied shared to themes/shared/ (reference)"
-else
-    echo -e "  ${RED}✗${NC} Shared components directory not found!"
-fi
-echo ""
 
 # ─────────────────────────────────────────────────────────────────────────────
 # DEPLOY ARCANA THEME
@@ -173,7 +137,7 @@ safe_copy "$ARCANA_SRC/kitty.conf" "$ARCANA_DEST/kitty.conf"
 safe_copy "$ARCANA_SRC/hyprlock.conf" "$ARCANA_DEST/hyprlock.conf"
 safe_copy "$ARCANA_SRC/rofi" "$ARCANA_DEST/rofi" true
 safe_copy "$ARCANA_SRC/dunst" "$ARCANA_DEST/dunst" true
-safe_copy "$ARCANA_SRC/quickshell" "$ARCANA_DEST/quickshell" true
+
 echo ""
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -188,7 +152,7 @@ safe_copy "$GHOST_SRC/kitty.conf" "$GHOST_DEST/kitty.conf"
 safe_copy "$GHOST_SRC/hyprlock.conf" "$GHOST_DEST/hyprlock.conf"
 safe_copy "$GHOST_SRC/rofi" "$GHOST_DEST/rofi" true
 safe_copy "$GHOST_SRC/dunst" "$GHOST_DEST/dunst" true
-safe_copy "$GHOST_SRC/quickshell" "$GHOST_DEST/quickshell" true
+
 echo ""
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -307,61 +271,7 @@ if [ -f "$SCRIPT_DIR/zsh/.zshrc" ]; then
     echo ""
 fi
 
-# ─────────────────────────────────────────────────────────────────────────────
-# VERIFY QUICKSHELL SETUP
-# ─────────────────────────────────────────────────────────────────────────────
-echo -e "${PURPLE}Verifying Quickshell setup...${NC}"
-QUICKSHELL_OK=true
 
-# Check arcana shell.qml exists
-if [ -f "$HYPR_DIR/themes/arcana/quickshell/shell.qml" ]; then
-    echo -e "  ${GREEN}✓${NC} Arcana shell.qml found"
-else
-    echo -e "  ${RED}✗${NC} Arcana shell.qml missing!"
-    QUICKSHELL_OK=false
-fi
-
-# Check ghost shell.qml exists
-if [ -f "$HYPR_DIR/themes/ghost/quickshell/shell.qml" ]; then
-    echo -e "  ${GREEN}✓${NC} Ghost shell.qml found"
-else
-    echo -e "  ${RED}✗${NC} Ghost shell.qml missing!"
-    QUICKSHELL_OK=false
-fi
-
-# Check shared components in arcana/quickshell/shared
-if [ -d "$HYPR_DIR/themes/arcana/quickshell/shared" ]; then
-    echo -e "  ${GREEN}✓${NC} Arcana quickshell/shared directory exists"
-else
-    echo -e "  ${RED}✗${NC} Arcana quickshell/shared missing!"
-    QUICKSHELL_OK=false
-fi
-
-# Check shared components in ghost/quickshell/shared
-if [ -d "$HYPR_DIR/themes/ghost/quickshell/shared" ]; then
-    echo -e "  ${GREEN}✓${NC} Ghost quickshell/shared directory exists"
-else
-    echo -e "  ${RED}✗${NC} Ghost quickshell/shared missing!"
-    QUICKSHELL_OK=false
-fi
-
-# Check required shared components in arcana
-for comp in "WallpaperWidget.qml" "SystemStats.qml" "PowerMenu.qml" "NotificationCenter.qml" "WeatherWidget.qml"; do
-    if [ -f "$HYPR_DIR/themes/arcana/quickshell/shared/$comp" ]; then
-        echo -e "  ${GREEN}✓${NC} Arcana shared/$comp found"
-    else
-        echo -e "  ${YELLOW}⚠${NC} Arcana shared/$comp not found"
-    fi
-done
-
-# Check if quickshell is installed
-if command -v quickshell &>/dev/null; then
-    echo -e "  ${GREEN}✓${NC} Quickshell is installed"
-else
-    echo -e "  ${RED}✗${NC} Quickshell not found! Install it from AUR: yay -S quickshell-git"
-    QUICKSHELL_OK=false
-fi
-echo ""
 
 # ─────────────────────────────────────────────────────────────────────────────
 # COMPLETION SUMMARY
@@ -379,12 +289,7 @@ echo "  ~/.config/hypr/themes/shared/ - Shared QML components"
 echo "  ~/.config/hypr/scripts/       - Mode switching & utility scripts"
 echo "  ~/.config/hypr/wallpapers/    - Wallpaper collection"
 echo ""
-echo -e "${CYAN}Quickshell Structure:${NC}"
-echo "  themes/arcana/quickshell/     - Arcana TopBar, Dock, shell.qml"
-echo "  themes/ghost/quickshell/      - Ghost TopBar, PentestDock, shell.qml"
-echo "  themes/arcana/shared -> shared/ (symlink for imports)"
-echo "  themes/ghost/shared -> shared/  (symlink for imports)"
-echo ""
+
 echo -e "${CYAN}Active Configs (via symlinks):${NC}"
 echo "  ~/.config/kitty/    -> Arcana theme"
 echo "  ~/.config/rofi/     -> Arcana theme"
@@ -409,16 +314,11 @@ if [ -d "$HYPR_DIR/scripts" ]; then
 fi
 echo ""
 
-if [ "$QUICKSHELL_OK" = false ]; then
-    echo -e "${RED}╔══════════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${RED}║ WARNING: Quickshell setup has issues - check messages above!             ║${NC}"
-    echo -e "${RED}╚══════════════════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-fi
+
 
 echo -e "${GREEN}Next Steps:${NC}"
 echo "  1. Log out and select Hyprland from your display manager"
-echo "  2. Quickshell will auto-start via exec-once in hyprland.conf"
+
 echo "  3. Use SUPER + SHIFT + G to switch between modes"
 echo "  4. Use SUPER + W to change wallpapers in Arcana mode"
 echo ""

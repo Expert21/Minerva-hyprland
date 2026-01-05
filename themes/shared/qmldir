@@ -1,7 +1,0 @@
-module shared
-
-WallpaperWidget 1.0 WallpaperWidget.qml
-SystemStats 1.0 SystemStats.qml
-PowerMenu 1.0 PowerMenu.qml
-NotificationCenter 1.0 NotificationCenter.qml
-WeatherWidget 1.0 WeatherWidget.qml
